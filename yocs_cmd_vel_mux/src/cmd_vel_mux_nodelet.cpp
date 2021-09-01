@@ -89,14 +89,16 @@ void CmdVelMuxNodelet::onInit()
 {
   ros::NodeHandle &nh = this->getPrivateNodeHandle();
 
+  // Must create this publisher now because it could get called before dyncfg setCallback()
+  // returns below, which could cause an assert failure.
+  active_subscriber = nh.advertise <std_msgs::String> ("active", 1, true); // latched topic
+
   /*********************
   ** Dynamic Reconfigure
   **********************/
   dynamic_reconfigure_cb = boost::bind(&CmdVelMuxNodelet::reloadConfiguration, this, _1, _2);
   dynamic_reconfigure_server = new dynamic_reconfigure::Server<yocs_cmd_vel_mux::reloadConfig>(nh);
   dynamic_reconfigure_server->setCallback(dynamic_reconfigure_cb);
-
-  active_subscriber = nh.advertise <std_msgs::String> ("active", 1, true); // latched topic
 
   // Notify the world that by now nobody is publishing on cmd_vel yet
   std_msgs::StringPtr active_msg(new std_msgs::String);
