@@ -87,11 +87,11 @@ class Node(object):
         publishers['enable_approach_controller'] = rospy.Publisher('~enable_approach_controller', std_msgs.String, queue_size=5)
         publishers['disable_approach_controller'] = rospy.Publisher('~disable_approach_controller', std_msgs.Empty, queue_size=5)
         subscribers = {}
-        subscribers['enable'] = rospy.Subscriber('~enable', std_msgs.String, self._ros_enable_subscriber)
-        subscribers['spotted_markers'] = rospy.Subscriber('~spotted_markers', std_msgs.String, self._ros_spotted_subscriber)
-        subscribers['relative_target_pose'] = rospy.Subscriber('~relative_target_pose', geometry_msgs.PoseStamped, self._ros_relative_target_pose_subscriber)
+        subscribers['enable'] = rospy.Subscriber('~enable', std_msgs.String, self._ros_enable_subscriber, queue_size=100)
+        subscribers['spotted_markers'] = rospy.Subscriber('~spotted_markers', std_msgs.String, self._ros_spotted_subscriber, queue_size=100)
+        subscribers['relative_target_pose'] = rospy.Subscriber('~relative_target_pose', geometry_msgs.PoseStamped, self._ros_relative_target_pose_subscriber, queue_size=100)
 
-        subscribers['approach_controller_result'] = rospy.Subscriber('~approach_pose_reached', std_msgs.Bool, self._ros_controller_result_callback)
+        subscribers['approach_controller_result'] = rospy.Subscriber('~approach_pose_reached', std_msgs.Bool, self._ros_controller_result_callback, queue_size=100)
         return (publishers, subscribers)
 
     def _is_running(self):

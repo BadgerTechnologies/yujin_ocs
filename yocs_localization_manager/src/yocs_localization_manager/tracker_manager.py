@@ -25,7 +25,7 @@ class TrackerManager(object):
         self._init_params()
         self._init_variables()
 
-        self._sub_global_pairs = rospy.Subscriber('global_pairs', ar_track_alvar_msgs.AlvarMarkers, self._process_global_pairs)
+        self._sub_global_pairs = rospy.Subscriber('global_pairs', ar_track_alvar_msgs.AlvarMarkers, self._process_global_pairs, queue_size=100)
         self._pub_pair_list = rospy.Publisher('update_ar_pairs', yocs_msgs.ARPairList, latch=True, queue_size=1)
         
 

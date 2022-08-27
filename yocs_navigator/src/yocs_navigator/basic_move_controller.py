@@ -11,7 +11,7 @@ import geometry_msgs.msg as geometry_msgs
 
 class BasicMoveController(object):
     def __init__(self, odom_topic='odom', cmd_vel_topic='cmd_vel'):
-        self._sub_odom = rospy.Subscriber(odom_topic, nav_msgs.Odometry, self.process_odometry)
+        self._sub_odom = rospy.Subscriber(odom_topic, nav_msgs.Odometry, self.process_odometry, queue_size=100)
         self._pub_cmd_vel = rospy.Publisher(cmd_vel_topic, geometry_msgs.Twist, queue_size=5)
         
         self._odom = None

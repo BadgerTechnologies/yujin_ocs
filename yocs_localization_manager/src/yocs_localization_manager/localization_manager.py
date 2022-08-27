@@ -31,7 +31,7 @@ class LocalizationManager(object):
             self.loginfo("Running in simulation mode.")
         else:
             self._client = dynamic_reconfigure.client.Client(rospy.get_param('~pose_tracker', 'ar_track_alvar'))
-            self._sub_tracked_poses = rospy.Subscriber('pose_tracker/poses', geometry_msgs.PoseWithCovarianceStamped, self._tracked_poses_callback)
+            self._sub_tracked_poses = rospy.Subscriber('pose_tracker/poses', geometry_msgs.PoseWithCovarianceStamped, self._tracked_poses_callback, queue_size=100)
 
         self._pub_init_pose = rospy.Publisher('initialpose', geometry_msgs.PoseWithCovarianceStamped, latch=True, queue_size=3)
 

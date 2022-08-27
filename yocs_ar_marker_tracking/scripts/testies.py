@@ -44,7 +44,7 @@ class Jagi(object):
         self.x_publisher = rospy.Publisher('x', Float32)
         self.z_publisher = rospy.Publisher('z', Float32)
         self.heading_publisher = rospy.Publisher('heading', Float32)
-        self.subscriber = rospy.Subscriber('/visualization_marker', visualization_msgs.Marker, self.callback)
+        self.subscriber = rospy.Subscriber('/visualization_marker', visualization_msgs.Marker, self.callback, queue_size=100)
 
 
     def print_pythags_results(self):

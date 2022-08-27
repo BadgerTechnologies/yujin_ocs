@@ -73,7 +73,7 @@ class MagicButtonRelay(object):
 
     def __init__(self, relay_specifications):
         self.relays = []
-        self.subscriber = rospy.Subscriber("joy", Joy, self.joy_callback)
+        self.subscriber = rospy.Subscriber("joy", Joy, self.joy_callback, queue_size=100)
         for spec in relay_specifications:
             try:
                 if spec["type"] == "event":
