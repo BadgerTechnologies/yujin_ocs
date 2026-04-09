@@ -99,8 +99,9 @@ void VelocitySmoother::velocityCB(const geometry_msgs::Twist::ConstPtr& msg)
   locker.lock();
   target_vel.linear.x  =
       msg->linear.x  > 0.0 ? std::min(msg->linear.x,  speed_lim_v) : std::max(msg->linear.x,  -speed_lim_v);
+  double effective_lim_w = speedLimW(msg->linear.x);
   target_vel.angular.z =
-      msg->angular.z > 0.0 ? std::min(msg->angular.z, speed_lim_w) : std::max(msg->angular.z, -speed_lim_w);
+      msg->angular.z > 0.0 ? std::min(msg->angular.z, effective_lim_w) : std::max(msg->angular.z, -effective_lim_w);
   locker.unlock();
 }
 
@@ -313,6 +314,10 @@ bool VelocitySmoother::init(ros::NodeHandle& nh)
   // Deceleration can be more aggressive, if necessary
   decel_lim_v = decel_factor*accel_lim_v;
   decel_lim_w = decel_factor*accel_lim_w;
+
+  // Velocity-dependent turn rate limiting (disabled by default)
+  nh.param("turn_rate_centrifugal_force_limit", turn_rate_centrifugal_force_limit, 0.0);
+  nh.param("turn_rate_payload",                 turn_rate_payload,                 0.0);
 
   // Publishers and subscribers
   odometry_sub    = nh.subscribe("odometry",      1, &VelocitySmoother::odometryCB, this);
