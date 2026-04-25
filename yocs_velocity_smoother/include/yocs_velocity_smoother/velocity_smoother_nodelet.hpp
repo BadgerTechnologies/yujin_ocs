@@ -61,6 +61,23 @@ private:
   double speed_lim_w, accel_lim_w, decel_lim_w;
   double decel_factor;
 
+  // Velocity-dependent turn rate limiting.
+  // At low speeds, speed_lim_w applies. Above the crossover velocity, the turn
+  // rate is capped so that centrifugal force = turn_rate_centrifugal_force_limit.
+  // Crossover velocity = turn_rate_centrifugal_force_limit / (turn_rate_payload * speed_lim_w)
+  // Set turn_rate_centrifugal_force_limit <= 0 to disable (use static speed_lim_w).
+  double turn_rate_centrifugal_force_limit;
+  double turn_rate_payload;
+
+  double speedLimW(double linear_vel) const
+  {
+    if (turn_rate_centrifugal_force_limit <= 0.0)
+      return speed_lim_w;
+    // F = m * V * omega  =>  omega = F / (m * V)
+    double kinematic_lim = turn_rate_centrifugal_force_limit / (turn_rate_payload * std::abs(linear_vel));
+    return std::min(speed_lim_w, kinematic_lim);
+  }
+
   double frequency;
 
   geometry_msgs::Twist last_cmd_vel;
